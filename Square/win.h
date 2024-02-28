@@ -18,6 +18,9 @@ protected:
 public:
     Win(QWidget *parent = nullptr);
     ~Win();
+public slots:
+    void begin(); // метод начальной настройки интерфейса
+    void calc(); // метод реализации вычислений
 };
 
 class StrValidator:public QValidator // класс компонента проверки ввода
