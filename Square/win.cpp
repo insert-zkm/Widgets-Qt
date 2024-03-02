@@ -16,13 +16,16 @@ Win::Win(QWidget *parent)
 
     outputLabel = new QLabel("Результат:", this);
     outputEdit  = new QLineEdit("",this);
+
     nextButton  = new QPushButton("Следующее", this);
     exitButton  = new QPushButton("Выход", this);
 
     // компоновка приложения выполняется согласно рисунку 2.
     QVBoxLayout *vLayout1 = new QVBoxLayout(frame);
+
     vLayout1->addWidget(inputLabel);
     vLayout1->addWidget(inputEdit);
+
     vLayout1->addWidget(outputLabel);
     vLayout1->addWidget(outputEdit);
     vLayout1->addStretch();
@@ -38,9 +41,9 @@ Win::Win(QWidget *parent)
 
     begin();
 
-    connect(exitButton, SIGNAL(clicked(bool)),      this,    SLOT(close()));
-    connect(nextButton, SIGNAL(clicked(bool)),      this,    SLOT(begin()));
-    connect(inputEdit,  SIGNAL(returnPressed()),    this,    SLOT(calc()));
+    connect(exitButton, &QPushButton::clicked,        this,    &Win::close);
+    connect(nextButton, &QPushButton::clicked,        this,    &Win::begin);
+    connect(inputEdit,  &QLineEdit::returnPressed,    this,    &Win::calc);
 }
 
 Win::~Win()
@@ -64,26 +67,46 @@ void Win::calc()
     bool Ok = true;
     float r, a;
     QString str = inputEdit->text();
-    a = str.toDouble(&Ok);
-    if(Ok)
-    {
-        r = a * a;
-        str.setNum(r);
-        outputEdit->setText(str);
-        inputEdit->setEnabled(false);
-        outputLabel->setVisible(true);
-        outputEdit->setVisible(true);
-        nextButton->setDefault(true);
-        nextButton->setEnabled(true);
-        nextButton->setFocus();
-    }
-    else if (!str.isEmpty())
-    {
+    try {
+        a = str.toDouble(&Ok);
+
+        if(!qIsFinite(a)) {
+            throw std::range_error("Переполнение.");
+        }
+
+        if(Ok)
+        {
+            r = a * a;
+            if(!qIsFinite(r)) {
+                throw std::range_error("Переполнение.");
+            }
+            str.setNum(r);
+            outputEdit->setText(str);
+            inputEdit->setEnabled(false);
+            outputLabel->setVisible(true);
+            outputEdit->setVisible(true);
+            nextButton->setDefault(true);
+            nextButton->setEnabled(true);
+            nextButton->setFocus();
+        }
+        else if (!str.isEmpty())
+        {
+            throw std::invalid_argument("Введено неверное значение.");
+        }
+    }  catch (std::overflow_error &e) {
         QMessageBox msgBox(QMessageBox::Information,
             "Возведение в квадрат.",
-            "Введено неверное значение.",
+            e.what(),
+            QMessageBox::Ok);
+        msgBox.exec();
+    } catch (std::invalid_argument &e) {
+        QMessageBox msgBox(QMessageBox::Information,
+            "Возведение в квадрат.",
+            e.what(),
             QMessageBox::Ok);
         msgBox.exec();
     }
+
+
 }
 
