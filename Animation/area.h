@@ -1,11 +1,28 @@
 #ifndef AREA_H
 #define AREA_H
 
+#include <QWidget>
+#include <QTimerEvent>
 
-class Area
+#include "figure.h"
+
+class Area : public QWidget
 {
+    int myTimer; // идентификатор таймера
+    float alpha; // угол поворота
 public:
-    Area();
+    Area(QWidget *parent = 0);
+    ~Area();
+
+    MyLine *myline;
+    MyRect *myrect;
+protected:
+
+    // обработчики событий
+    void paintEvent(QPaintEvent *event);
+    void timerEvent(QTimerEvent *event);
+    void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *);
 };
 
 #endif // AREA_H

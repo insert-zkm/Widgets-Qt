@@ -10,11 +10,13 @@ CONFIG += c++11
 
 SOURCES += \
     area.cpp \
+    figure.cpp \
     main.cpp \
     window.cpp
 
 HEADERS += \
     area.h \
+    figure.h \
     window.h
 
 # Default rules for deployment.
