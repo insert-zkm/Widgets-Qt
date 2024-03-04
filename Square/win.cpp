@@ -1,4 +1,5 @@
 #include "win.h"
+#include <QDebug>
 
 Win::Win(QWidget *parent)
     : QWidget(parent)
@@ -69,16 +70,17 @@ void Win::calc()
     QString str = inputEdit->text();
     try {
         a = str.toDouble(&Ok);
+        qDebug() << a;
 
         if(!qIsFinite(a)) {
-            throw std::range_error("Переполнение.");
+            throw std::overflow_error("Переполнение.");
         }
 
         if(Ok)
         {
             r = a * a;
             if(!qIsFinite(r)) {
-                throw std::range_error("Переполнение.");
+                throw std::overflow_error("Переполнение.");
             }
             str.setNum(r);
             outputEdit->setText(str);
@@ -93,18 +95,13 @@ void Win::calc()
         {
             throw std::invalid_argument("Введено неверное значение.");
         }
-    }  catch (std::overflow_error &e) {
+    }  catch (std::exception &e) {
         QMessageBox msgBox(QMessageBox::Information,
             "Возведение в квадрат.",
             e.what(),
             QMessageBox::Ok);
         msgBox.exec();
-    } catch (std::invalid_argument &e) {
-        QMessageBox msgBox(QMessageBox::Information,
-            "Возведение в квадрат.",
-            e.what(),
-            QMessageBox::Ok);
-        msgBox.exec();
+        inputEdit->clear();
     }
 
 
