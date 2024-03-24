@@ -1,5 +1,4 @@
 #include "win.h"
-
 Win::Win(QWidget *parent)
     : QWidget(parent)
 {
@@ -12,28 +11,39 @@ Win::Win(QWidget *parent)
     exitbutton = new QPushButton("Выход", this);
 
     QHBoxLayout *layout1 = new QHBoxLayout();
-    layout1->addWidget(label1);
-    layout1->addWidget(label2);
-
     QHBoxLayout *layout2 = new QHBoxLayout();
-    layout2->addWidget(edit1);
-    layout2->addWidget(edit2);
-
     QHBoxLayout *layout3 = new QHBoxLayout();
-    layout3->addWidget(calcbutton);
-    layout3->addWidget(exitbutton);
-
     QVBoxLayout *layout4 = new QVBoxLayout(this);
+
     layout4->addLayout(layout1);
     layout4->addLayout(layout2);
     layout4->addLayout(layout3);
 
-    connect(calcbutton, &QPushButton::clicked,      edit1,  &Counter::add_one);
-    connect(edit1,      &Counter::tick_signal,      edit2,  &Counter::add_one);
-    connect(exitbutton, &QPushButton::clicked,      this,   &Win::close);
+    if(!layout1 || !layout2 || !layout3 || !layout4 || !label1 || !label2 || !edit1 || !edit2 || !calcbutton || !exitbutton) {
+        this->failed = true;
+    } else {
+        layout1->addWidget(label1);
+        layout1->addWidget(label2);
+
+        layout2->addWidget(edit1);
+        layout2->addWidget(edit2);
+
+        layout3->addWidget(calcbutton);
+        layout3->addWidget(exitbutton);
+
+
+
+        connect(calcbutton, &QPushButton::clicked,      edit1,  &Counter::add_one);
+        connect(edit1,      &Counter::tick_signal,      edit2,  &Counter::add_one);
+        connect(exitbutton, &QPushButton::clicked,      this,   &Win::close);
+    }
 }
 
 Win::~Win()
 {
 }
 
+
+bool Win::Failed() const {
+    return this->failed;
+}

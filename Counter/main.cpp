@@ -1,13 +1,13 @@
 #include "win.h"
-
 #include <QApplication>
 
-int main(int argc, char *argv[]) try
+int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Win w;
+    if(w.Failed()) {
+        return 0;
+    }
     w.show();
     return a.exec();
-} catch (const std::exception &e) {
-    qDebug() << e.what();
 }

@@ -34,10 +34,13 @@ class Win : public QWidget
 public:
     Win(QWidget *parent = nullptr);
     ~Win();
+
+    bool Failed() const;
 protected:
     QLabel *label1,*label2;
     Counter *edit1,*edit2;
     QPushButton *calcbutton;
     QPushButton *exitbutton;
+    bool failed = false;
 };
 #endif // WIN_H
